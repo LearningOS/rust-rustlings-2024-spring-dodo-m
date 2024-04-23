@@ -2,7 +2,7 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -29,13 +29,13 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T:std::cmp::PartialOrd + Clone> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T:std::cmp::PartialOrd + Clone> LinkedList<T> {
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -69,14 +69,54 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+	pub fn merge(mut list_a:LinkedList<T>,mut list_b:LinkedList<T>) -> Self
 	{
+        // let mut list_m = LinkedList::<T>::new();
+        // let mut vec_m:Vec<T> = vec![];
+        
+        // for i in 0..list_a.length {
+        //     vec_m.push(*list_a.get(i as i32).unwrap());
+        // }
+        // for i in 0..list_b.length {
+        //     vec_m.push(*list_b.get(i as i32).unwrap() );
+        // }
+
+        // vec_m.sort();
+
+        // for i in 0..vec_m.len() {
+        //     list_m.add(vec_m[i]);
+        // }
+        // list_m
+
 		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+        let mut list_m = LinkedList::<T>::new();
+        let mut head_a = list_a.start;
+        let mut head_b = list_b.start;
+	    while let (Some(ptr_a), Some(ptr_b)) = (head_a, head_b) {
+            unsafe {
+                if ptr_a.as_ref().val <= ptr_b.as_ref().val {
+                    list_m.add(ptr_a.as_ref().val.clone());
+                    head_a = (*ptr_a.as_ptr()).next;
+                } else {
+                    list_m.add(ptr_b.as_ref().val.clone());
+                    head_b = (*ptr_b.as_ptr()).next;
+                }
+            }
         }
+        while let (Some(ptr_a), None) = (head_a, head_b) {
+            unsafe {
+                list_m.add(ptr_a.as_ref().val.clone());
+                head_a = (*ptr_a.as_ptr()).next;
+            }
+        }
+        while let (None, Some(ptr_b)) = (head_a, head_b) {
+            unsafe {
+                list_m.add(ptr_b.as_ref().val.clone());
+                head_b = (*ptr_b.as_ptr()).next;
+            }
+        }
+        list_m
+
 	}
 }
 
