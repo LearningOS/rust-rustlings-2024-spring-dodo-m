@@ -29,8 +29,6 @@ impl Graph {
     fn bfs_with_return(&self, start: usize) -> Vec<usize> {
         
 		//TODO
-
-
         let mut visited: HashSet<usize> = HashSet::new();
         let mut queue: VecDeque<usize> = VecDeque::new();
         let mut path: Vec<usize> = Vec::new();
